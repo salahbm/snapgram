@@ -1,13 +1,14 @@
 import { INewUser } from "@/types";
 import { account } from "./config";
 import { ID } from "appwrite";
+
 export async function createUserAccount(user: INewUser) {
   try {
     const newAccount = await account.create(
       ID.unique(),
       user.email,
-      user.name,
-      user.password
+      user.password,
+      user.name
     );
     return newAccount;
   } catch (error) {
