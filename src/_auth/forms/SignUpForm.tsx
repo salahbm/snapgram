@@ -16,13 +16,19 @@ import Loader from "./../../components/shared/Loader";
 import { Link } from "react-router-dom";
 
 import { useToast } from "@/components/ui/use-toast";
-import { useCreateUserAccount } from "@/lib/react-query/queriesAndMutations";
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
 
 const SignUpForm = () => {
   const { toast } = useToast();
 
   const { mutateAsync: createUserAccount, isLoading: isCreatingUser } =
     useCreateUserAccount();
+
+  const { mutateAsync: signInAccount, isLoading: isSignIn } =
+    useSignInAccount();
 
   const form = useForm<z.infer<typeof SignUpValidation>>({
     resolver: zodResolver(SignUpValidation),
@@ -41,7 +47,16 @@ const SignUpForm = () => {
       return toast({
         title: "Creating Account failed",
       });
-      // const session  = await signInAccount()
+    }
+
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    });
+    if (!session) {
+      return toast({
+        title: "Sign Up into  Account failed",
+      });
     }
   }
 
