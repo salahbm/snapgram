@@ -13,35 +13,48 @@ import * as z from "zod";
 import FileUploader from "../shared/FileUploader";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { PostFormValidation } from "@/lib/validation";
+import { Models } from "appwrite";
+import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
+import { toast } from "../ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
-const formSchema = z.object({
-  caption: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  location: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  tags: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+type PostType = {
+  post: Models.Document;
+};
 
-const PostForm = ({ post }) => {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+const PostForm = ({ post }: PostType) => {
+  const { mutateAsync: createPost, isPending: isLoadingCreate } =
+    useCreatePost();
+  const { user } = useUserContext();
+  const navigate = useNavigate();
+
+  const form = useForm<z.infer<typeof PostFormValidation>>({
+    resolver: zodResolver(PostFormValidation),
     defaultValues: {
-      caption: "",
-      location: "",
-      tags: "",
+      caption: post ? post?.caption : "",
+      file: [],
+      location: post ? post?.location : "",
+      tags: post ? post?.tags.join(",") : "",
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof PostFormValidation>) {
+    const newPost = await createPost({
+      ...values,
+      userId: user.id,
+    });
+
+    if (!newPost) {
+      toast({
+        title: "Please Try Again",
+        description: "Problem in creating new post",
+      });
+    }
+
+    navigate("/");
   }
 
   return (
@@ -70,7 +83,7 @@ const PostForm = ({ post }) => {
         />
         <FormField
           control={form.control}
-          name="caption"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="shad-form_label">Add Photos</FormLabel>
