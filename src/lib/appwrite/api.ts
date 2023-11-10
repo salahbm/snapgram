@@ -90,40 +90,42 @@ export async function signOutAccount() {
 
 // Post Logic funcs
 
+// ============================== CREATE POST
 export async function createPost(post: INewPost) {
   try {
+    // Upload file to appwrite storage
     const uploadedFile = await uploadFile(post.file[0]);
 
     if (!uploadedFile) throw Error;
 
-    if (!uploadFile) {
-      deleteFile(uploadedFile.$id);
-      throw Error;
-    }
-    // get the file
+    // Get file url
     const fileUrl = getFilePreview(uploadedFile.$id);
 
-    // convert tags into array
+    if (!fileUrl) {
+      await deleteFile(uploadedFile.$id);
+      throw Error;
+    }
 
+    // Convert tags into array
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
 
-    // save to database
-
-    const newPost = databases.createDocument(
+    // Create post
+    const newPost = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.postsCollectionId,
       ID.unique(),
       {
         creator: post.userId,
         caption: post.caption,
+        imagesUrl: fileUrl,
         imageId: uploadedFile.$id,
-        imageUrl: fileUrl,
         location: post.location,
         tags: tags,
       }
     );
+
     if (!newPost) {
-      deleteFile(uploadedFile.$id);
+      await deleteFile(uploadedFile.$id);
       throw Error;
     }
 
@@ -147,9 +149,9 @@ export async function uploadFile(file: File) {
   }
 }
 
-export async function getFilePreview(fileId: string) {
+export function getFilePreview(fileId: string) {
   try {
-    const filePreview = storage.getFilePreview(
+    const fileUrl = storage.getFilePreview(
       appwriteConfig.storageId,
       fileId,
       2000,
@@ -158,7 +160,9 @@ export async function getFilePreview(fileId: string) {
       100
     );
 
-    return filePreview;
+    if (!fileUrl) throw Error;
+
+    return fileUrl;
   } catch (error) {
     console.log(error);
   }

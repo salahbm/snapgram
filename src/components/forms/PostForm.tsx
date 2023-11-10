@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,7 +22,7 @@ import { toast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 
 type PostType = {
-  post: Models.Document;
+  post?: Models.Document;
 };
 
 const PostForm = ({ post }: PostType) => {
@@ -35,15 +36,15 @@ const PostForm = ({ post }: PostType) => {
     defaultValues: {
       caption: post ? post?.caption : "",
       file: [],
-      location: post ? post?.location : "",
-      tags: post ? post?.tags.join(",") : "",
+      location: post ? post.location : "",
+      tags: post ? post.tags.join(",") : "",
     },
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof PostFormValidation>) {
+  async function onSubmit(value: z.infer<typeof PostFormValidation>) {
     const newPost = await createPost({
-      ...values,
+      ...value,
       userId: user.id,
     });
 
@@ -137,7 +138,7 @@ const PostForm = ({ post }: PostType) => {
             type="submit"
             className="shad-button_primary whitespace-nowrap"
           >
-            Submit
+            {isLoadingCreate ? "Uploading ... " : "Submit"}
           </Button>
         </div>
       </form>
