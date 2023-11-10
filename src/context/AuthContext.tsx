@@ -68,9 +68,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (
-      localStorage.getItem("cookiesFallback") === "[]"
-      //  ||
-      // localStorage.getItem("cookiesFallback") === null
+      localStorage.getItem("cookiesFallback") === "[]" ||
+      localStorage.getItem("cookiesFallback") === null
     )
       navigate("/sign-in");
 
