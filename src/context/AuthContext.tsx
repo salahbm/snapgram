@@ -9,8 +9,10 @@ interface InitialStateType {
   isAuthenticated: boolean;
   setUser: (user: IUser) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
-  checkAuth?: () => Promise<boolean>;
+  checkAuthUser: () => Promise<boolean>;
 }
+
+// eslint-disable-next-line react-refresh/only-export-components
 export const INITIAL_USER = {
   id: "",
   name: "",
@@ -26,7 +28,7 @@ const INITIAL_STATE = {
   isAuthenticated: false,
   setUser: () => {},
   setIsAuthenticated: () => {},
-  checkAuth: async () => false as boolean,
+  checkAuthUser: async () => false as boolean,
 };
 
 const AuthContext = createContext<InitialStateType>(INITIAL_STATE);
@@ -66,8 +68,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (
-      localStorage.getItem("cookiesFallback") === "[]" ||
-      localStorage.getItem("cookiesFallback") === null
+      localStorage.getItem("cookiesFallback") === "[]"
+      //  ||
+      // localStorage.getItem("cookiesFallback") === null
     )
       navigate("/sign-in");
 
