@@ -207,7 +207,7 @@ export async function likePost(postId: string, likesArray: string[]) {
     console.log(error);
   }
 }
-export async function savePost(postId: string, userId: string[]) {
+export async function savePost(postId: string, userId: string) {
   try {
     const updatePost = await databases.createDocument(
       appwriteConfig.databaseId,
