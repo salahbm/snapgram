@@ -13,22 +13,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { SignUpValidation } from "./../../lib/validation/index";
 import Loader from "./../../components/shared/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useToast } from "@/components/ui/use-toast";
 import {
   useCreateUserAccount,
   useSignInAccount,
 } from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
 
 const SignUpForm = () => {
   const { toast } = useToast();
 
+  // context data
+
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const { mutateAsync: createUserAccount, isLoading: isCreatingUser } =
     useCreateUserAccount();
 
   const { mutateAsync: signInAccount, isLoading: isSignIn } =
     useSignInAccount();
+
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof SignUpValidation>>({
     resolver: zodResolver(SignUpValidation),
@@ -55,6 +61,18 @@ const SignUpForm = () => {
     });
     if (!session) {
       return toast({
+        title: "Sign Up into  Account failed",
+      });
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate("/");
+    } else {
+      toast({
         title: "Sign Up into  Account failed",
       });
     }
