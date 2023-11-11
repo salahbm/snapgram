@@ -16,18 +16,24 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { PostFormValidation } from "@/lib/validation";
 import { Models } from "appwrite";
-import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import {
+  useCreatePost,
+  useUpdatePost,
+} from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 import { toast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 
 type PostType = {
   post?: Models.Document;
+  action: "Create" | "Update";
 };
 
-const PostForm = ({ post }: PostType) => {
+const PostForm = ({ post, action }: PostType) => {
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+    useUpdatePost();
   const { user } = useUserContext();
   const navigate = useNavigate();
 
@@ -43,8 +49,24 @@ const PostForm = ({ post }: PostType) => {
 
   // 2. Define a submit handler.
   async function onSubmit(value: z.infer<typeof PostFormValidation>) {
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...(value as any),
+        postId: post?.$id,
+        imageId: post?.imageId,
+        imagesUrl: post?.imagesUrl,
+      });
+      if (!updatedPost) {
+        toast({
+          title: "Updating the post failed",
+          description: "Please try again",
+        });
+      }
+
+      return navigate(`/posts/${post?.$id}`);
+    }
     const newPost = await createPost({
-      ...value,
+      ...(value as any),
       userId: user.id,
     });
 
@@ -91,7 +113,7 @@ const PostForm = ({ post }: PostType) => {
               <FormControl>
                 <FileUploader
                   fieldChange={field.onChange}
-                  mediaUrl={post?.imageUrl}
+                  mediaUrl={post?.imagesUrl}
                 />
               </FormControl>
 
@@ -135,10 +157,15 @@ const PostForm = ({ post }: PostType) => {
             Cancel
           </Button>
           <Button
+            disabled={isLoadingCreate || isLoadingUpdate}
             type="submit"
             className="shad-button_primary whitespace-nowrap"
           >
-            {isLoadingCreate ? "Uploading ... " : "Submit"}
+            {isLoadingCreate
+              ? "Uploading ... "
+              : isLoadingUpdate
+              ? "Updating..."
+              : "Submit"}
           </Button>
         </div>
       </form>
