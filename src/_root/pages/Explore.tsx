@@ -1,14 +1,13 @@
-import React, { useRef, useState } from "react";
 import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
 import SearchResults from "@/components/shared/SearchResults";
 import { Input } from "@/components/ui/input";
+import useDebounce from "@/hooks/useDebounse";
 import {
   useGetPosts,
-  useSavePost,
   useSearchPosts,
 } from "@/lib/react-query/queriesAndMutations";
-import useDebounce from "@/hooks/useDebounse";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 const Explore = () => {
@@ -17,10 +16,10 @@ const Explore = () => {
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
   const { data: searchedPosts, isFetching: isSearchFetching } =
     useSearchPosts(debouncedValue);
-  const { ref, inView, entry } = useInView({
-    /* Optional options */
-    threshold: 0,
-  });
+  const { ref, inView } = useInView();
+  useEffect(() => {
+    if (inView && !searchValue) fetchNextPage();
+  }, [inView, searchValue]);
 
   if (!posts)
     return (
@@ -32,7 +31,7 @@ const Explore = () => {
   const shouldShowSearchResults = searchValue !== "";
   const shouldShowPosts =
     !shouldShowSearchResults &&
-    posts.pages.every((item) => item.documents.length === 0);
+    posts.pages.every((item) => (item ? item.documents.length === 0 : []));
 
   if (!posts) {
     return (
