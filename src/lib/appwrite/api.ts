@@ -282,7 +282,11 @@ export async function updatePost(post: IUpdatePost) {
         throw Error;
       }
 
-      image = { ...image, imagesUrl: fileUrl, imageId: uploadedFile };
+      image = {
+        ...image,
+        imagesUrl: fileUrl,
+        imageId: uploadedFile.toString(),
+      };
     }
 
     // Convert tags into array
