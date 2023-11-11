@@ -4,7 +4,7 @@ import GridPostList from "./GridPostList";
 
 type SearchResultsType = {
   isSearchFetching: boolean;
-  searchedPosts: Models.Document[];
+  searchedPosts: Models.Document | undefined;
 };
 const SearchResults = ({
   isSearchFetching,

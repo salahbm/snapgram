@@ -5,10 +5,13 @@ import { useUserContext } from "@/context/AuthContext";
 import {
   useDeletePost,
   useGetPostById,
+  useGetPosts,
+  useGetUserPosts,
 } from "@/lib/react-query/queriesAndMutations";
 import PostStats from "@/components/shared/PostStats";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
+import GridPostList from "@/components/shared/GridPostList";
 
 const PostDetails = () => {
   const navigate = useNavigate();
@@ -16,17 +19,17 @@ const PostDetails = () => {
   const { user } = useUserContext();
 
   const { data: post, isLoading } = useGetPostById(id);
-  // const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(
-  //   post?.creator.$id
-  // );
-  // const { mutate: deletePost } = useDeletePost();
+  const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(
+    post?.creator.$id
+  );
+  const { mutate: deletePost } = useDeletePost();
 
-  // const relatedPosts = userPosts?.documents.filter(
-  //   (userPost) => userPost.$id !== id
-  // );
+  const relatedPosts = userPosts?.documents.filter(
+    (userPost) => userPost.$id !== id
+  );
 
   const handleDeletePost = () => {
-    // deletePost({ postId: id, imageId: post?.imageId });
+    deletePost({ postId: id, imageId: post?.imageId });
     navigate(-1);
   };
 
@@ -141,7 +144,7 @@ const PostDetails = () => {
         </div>
       )}
 
-      {/* <div className="w-full max-w-5xl">
+      <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
         <h3 className="body-bold md:h3-bold w-full my-10">
@@ -152,7 +155,7 @@ const PostDetails = () => {
         ) : (
           <GridPostList posts={relatedPosts} />
         )}
-      </div> */}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { ID, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { string } from "zod";
 
 export async function createUserAccount(user: INewUser) {
   try {
@@ -333,26 +332,28 @@ export async function deletePost(postId: string, imageId: string) {
 
 // explore Page
 
-export async function getInfinitePosts({ pageParams }: { pageParams: number }) {
-  const queries = [Query.orderDesc(`$updatedAt`), Query.limit(10)];
+export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+  const queries = [Query.orderDesc("$updatedAt"), Query.limit(9)];
 
-  if (pageParams) {
-    queries.push(Query.cursorAfter(pageParams.toString()));
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
   }
+
   try {
-    const post = await databases.listDocuments(
+    const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postsCollectionId,
       queries
     );
 
-    if (!post) throw Error;
+    if (!posts) throw Error;
 
-    return post;
+    return posts;
   } catch (error) {
     console.log(error);
   }
 }
+
 export async function searchPost(searchTerm: string) {
   try {
     const searchPost = await databases.listDocuments(
@@ -364,6 +365,23 @@ export async function searchPost(searchTerm: string) {
     if (!searchPost) throw Error;
 
     return searchPost;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getUserPost(userId?: string) {
+  if (!userId) throw Error;
+  try {
+    const getUsersPostsList = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postsCollectionId,
+      [Query.equal("creator", userId), Query.orderDesc("$createdAt")]
+    );
+
+    if (!getUsersPostsList) throw Error;
+
+    return getUsersPostsList;
   } catch (error) {
     console.log(error);
   }
