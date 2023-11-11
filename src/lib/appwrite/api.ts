@@ -189,6 +189,8 @@ export async function getRecentPost() {
   return posts;
 }
 
+// Post stats
+
 export async function likePost(postId: string, likesArray: string[]) {
   try {
     const updatePost = await databases.updateDocument(
@@ -242,6 +244,7 @@ export async function deleteSavedPost(postId: string) {
   }
 }
 
+// Edit the post
 export async function getPostById(postId?: string) {
   if (!postId) throw Error;
   try {
@@ -262,7 +265,7 @@ export async function updatePost(post: IUpdatePost) {
   const hasFileTpUpdate = post.file.length > 0;
   try {
     let image = {
-      imagesUrl: post.imageUrl,
+      imagesUrl: post.imagesUrl,
       imageId: post.imageId,
     };
 
