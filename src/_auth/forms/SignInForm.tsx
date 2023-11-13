@@ -45,6 +45,8 @@ const SignInForm = () => {
       email: values.email,
       password: values.password,
     });
+    console.log(session);
+
     if (!session) {
       return toast({
         title: "Sign Up into  Account failed",

@@ -42,8 +42,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkAuthUser = async () => {
     try {
-      const currentAccount = await getCurrentUser();
       setIsLoading(true);
+      const currentAccount = await getCurrentUser();
+
       if (currentAccount) {
         setUser({
           id: currentAccount.$id,
@@ -54,10 +55,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
-
-        return true;
+        navigate("/");
       }
-      return false;
+
+      return true;
     } catch (error) {
       console.log(error);
       return false;
@@ -72,7 +73,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.getItem("cookiesFallback") === null
     )
       navigate("/sign-in");
-
     checkAuthUser();
   }, []);
 
@@ -83,6 +83,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,
+    setIsLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
