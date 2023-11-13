@@ -21,8 +21,30 @@ const Explore = () => {
     useSearchPosts(debouncedValue);
 
   useEffect(() => {
-    if (inView && !searchValue) fetchNextPage();
-  }, [inView, searchValue]);
+    let fetching = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleScroll = async (e: any) => {
+      const { scrollHeight, scrollTop, clientHeight } =
+        e.target.scrollingElement;
+      if (!fetching && scrollHeight - scrollTop <= clientHeight * 1.2) {
+        fetching = true;
+        if (hasNextPage) await fetchNextPage();
+        fetching = false;
+      }
+    };
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [fetchNextPage, hasNextPage]);
+
+  useEffect(() => {
+    if (inView && !searchValue) {
+      console.log(inView);
+
+      fetchNextPage();
+    }
+  }, [inView, searchValue, hasNextPage]);
 
   if (!posts)
     return (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import {
   useInfiniteQuery,
@@ -172,8 +173,8 @@ export const useGetCurrentUser = () => {
 export const useGetPosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts,
-    getNextPageParam: (lastPage) => {
+    queryFn: getInfinitePosts as any,
+    getNextPageParam: (lastPage: any) => {
       if (lastPage && lastPage?.documents.length === 0) {
         return null;
       }
@@ -182,6 +183,7 @@ export const useGetPosts = () => {
       const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
+    initialPageParam: 0,
   });
 };
 
