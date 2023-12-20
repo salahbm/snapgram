@@ -14,6 +14,8 @@ import UpdatePost from "./_root/pages/UpdatePost";
 import PostDetails from "./_root/pages/PostDetails";
 import Profile from "./_root/pages/Profile";
 import UpdateProfile from "./_root/pages/UpdateProfile";
+import LikedPosts from "./_root/pages/LikedPosts";
+
 const App = () => {
   return (
     <main className="flex h-screen">
@@ -33,6 +35,7 @@ const App = () => {
           <Route path="/update-post/:id" element={<UpdatePost />} />
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/profile/:id/liked-posts" element={<LikedPosts />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
         </Route>
       </Routes>
