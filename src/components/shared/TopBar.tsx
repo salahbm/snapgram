@@ -24,7 +24,7 @@ const TopBar = () => {
             height={200}
           />
         </Link>
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           <Button
             variant="ghost"
             className="shad_button_ghost"
