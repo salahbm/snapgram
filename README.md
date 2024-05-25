@@ -1,27 +1,37 @@
-# React + TypeScript + Vite
+Snapgraam
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Introducing Snapgraam ✌️
+Its a modern social like web app with a stunning UI with a native mobile feel, a special tech stack, an infinite scroll feature, and amazing performance using React JS, Appwrite, TypeScript, and more.
 
-Currently, two official plugins are available:
+🚀 Demo
+![image](https://github.com/salahbm/snapgram/assets/74946617/b99bb8b2-2735-4240-918b-3845d1fde631)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+Try the App: Snapgraam
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+🧐 Features
+Snapgraam comes up with a whole bunch of amazing features to provide you the best experience, Here're some of our best features.
 
-- Configure the top-level `parserOptions` property like this:
+ 💯 Infinite, Smooth: Scroll
+ 🎩 Upload your Posts
+ 👾 Like and Save posts
+ 📦 Explore
+ 🔖 Edit Posts
+ 🍭 Search posts
+ 🌘 Dark mode
+ 💻 Fully Responsive
+ 🚀 Fast Downloading
+(yet to be implemented; stay tuned!! 😉)
+ Save page
+ Profile details page
+ Top creator pages
+ Follow and Unfollow functionality
+ Comment in posts
+Enjoy creating cover image for your hashnode blog like never before, get started in seconds ✨️
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+💻 Built with
+React.js - The library for web and native user interfaces
+Appwrite - Platform which provide backend as a service
+TypeScript - TypeScript extends JavaScript by adding types to the language
+Zod - TypeScript-first schema validation with static type inference
+React-Query - To fetch & update data efficiently
